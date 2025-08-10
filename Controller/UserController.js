@@ -23,7 +23,8 @@ const Signin = async (req, res) => {
             const payload = {
                 id: savedUser._id,
                 FirstName: savedUser.FirstName,
-                IsAddress: savedUser.isAddress
+                IsAddress: savedUser.isAddress,
+                User:savedUser.User
             }
             const token = await jwt.sign(payload, process.env.jwt_key)
             console.log(token);
@@ -51,7 +52,8 @@ const login = async (req, res) => {
                 const payload = {
                     id: finduser._id,
                     FirstName: finduser.FirstName,
-                    IsAddress: finduser.isAddress
+                    IsAddress: finduser.isAddress,
+                    User:finduser.User
                 }
                 const token = await jwt.sign(payload, process.env.jwt_key)
                 return res.status(200).json({ message: 'succesfully Login', token: token })

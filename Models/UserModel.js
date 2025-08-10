@@ -12,27 +12,31 @@ const userSchema = new mongoose.Schema({
     Mobile: {
         type: String,
         required: true,
-        unique:true
+        unique: true
     },
-    Password:{
-        type:String,
-        required:true
+    Password: {
+        type: String,
+        required: true
     },
     isAddress: {
         type: Boolean,
         default: false
     },
-    HouseName:{
-        type:String,
-    }, 
-    Place:{
-        type:String
+    HouseName: {
+        type: String,
     },
-    Post:{
-        type:String
+    User: {
+        type: Boolean,
+        default: false
     },
-    PIN:{
-        type:String
+    Place: {
+        type: String
+    },
+    Post: {
+        type: String
+    },
+    PIN: {
+        type: String
     }
 },
     {
@@ -40,6 +44,6 @@ const userSchema = new mongoose.Schema({
     }
 )
 
-const USER=mongoose.model("user",userSchema)
+const USER = mongoose.model("user", userSchema)
 
 export default USER
