@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 
 const Db=async()=>{
     try {
-       await mongoose.connect(process.env.database_url)
-        console.log(`connected with ${process.env.database_url}`);
+       await mongoose.connect(process.env.connect_url)
+        console.log(`connected with ${process.env.connect_url}`);
         
     } catch (error) {
         console.log(error);
@@ -11,5 +11,5 @@ const Db=async()=>{
         
     }
 }
-
+ 
 export default Db
