@@ -5,7 +5,7 @@ const schema = new mongoose.Schema({
         type:String,
         required:true,
         unique:true
-    },
+    }, 
     Item: {
         type: String,
         required: true,
@@ -15,8 +15,8 @@ const schema = new mongoose.Schema({
         required: true
     },
     Pic: {
-        type: String,
-        required: true
+        type: String, 
+        required: true 
     },
     Availability: {
         type: Boolean,

@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import USER from '../Models/UserModel.js';
 import { placAllowed, postOffice } from '../place/Place.js';
+import BOOK from '../Models/bookModel.js';
 
 const Signin = async (req, res) => {
     console.log(req.body);
@@ -24,7 +25,7 @@ const Signin = async (req, res) => {
                 id: savedUser._id,
                 FirstName: savedUser.FirstName,
                 IsAddress: savedUser.isAddress,
-                User:savedUser.User
+                User: savedUser.User
             }
             const token = await jwt.sign(payload, process.env.jwt_key)
             console.log(token);
@@ -53,15 +54,15 @@ const login = async (req, res) => {
                     id: finduser._id,
                     FirstName: finduser.FirstName,
                     IsAddress: finduser.isAddress,
-                    User:finduser.User
+                    User: finduser.User
                 }
                 const token = await jwt.sign(payload, process.env.jwt_key)
                 return res.status(200).json({ message: 'succesfully Login', token: token })
             }
             console.log('invalid Password');
-            
+
             return res.status(400).json('invalid Password')
- 
+
         }
         return res.status(400).json('invalid Mobile')
 
@@ -114,7 +115,22 @@ const address = async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        
-    } 
+
+    }
 }
-export { login, Signin, address } 
+
+const myBooking = async (req, res) => {
+    console.log(req.params);
+    const id = req.params.id
+    try {
+        const data = await BOOK.find({ User: id }).populate({ path: 'BookedItem', select: ['Name','Pic'] })
+
+        console.log(data);
+        console.log(data.length);
+        return res.status(200).json(data)
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json('internal server error')
+    }
+}
+export { login, Signin, address, myBooking } 
