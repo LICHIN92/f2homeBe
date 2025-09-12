@@ -133,4 +133,17 @@ const myBooking = async (req, res) => {
         return res.status(500).json('internal server error')
     }
 }
-export { login, Signin, address, myBooking } 
+
+const changeMobile=async(req,res)=>{
+    console.log('mobile');
+    
+    console.log(req.body);
+    try {
+        
+    } catch (error) {   
+        
+    }
+    
+
+}
+export { login, Signin, address, myBooking ,changeMobile} 

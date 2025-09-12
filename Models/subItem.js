@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
 const schema = new mongoose.Schema({
-    Name:{
-        type:String,
-        required:true,
-        unique:true
-    }, 
+    Name: {
+        type: String,
+        required: true,
+        unique: true
+    },
     Item: {
         type: String,
         required: true,
@@ -15,22 +15,26 @@ const schema = new mongoose.Schema({
         required: true
     },
     Pic: {
-        type: String, 
-        required: true 
+        type: String,
+        required: true
     },
     Availability: {
         type: Boolean,
         default: false
     },
-    Stock:{
-        type:Number,
-        required:true
+    Stock: {
+        type: Number,
+        required: true
+    },
+    Minimum: {
+        type: Number,
+        required: true
     }
 },
     {
         timestamps: true
     }
 )
-const SUBITEM=mongoose.model("subitem",schema)
+const SUBITEM = mongoose.model("subitem", schema)
 
 export default SUBITEM

@@ -23,10 +23,11 @@ const additem = async (req, res) => {
                 pic: file.secure_url
             })
             newItem.save()
-
+            return res.status(200).json('successfully Added')
         }
+        return res.status(400).json(`${req.body.item} is already exist`)
     } catch (error) {
-
+        return res.status(500).json('internal server error')
     }
 
 }
@@ -35,11 +36,11 @@ const addProduct = async (req, res) => {
     console.log('addProduct');
     console.log(req.body);
 
-    const { Item, Name, Price,Stock } = req.body;
+    const { Item, Name, Price, Stock, Minimum } = req.body;
     console.log(req.file);
 
     try {
-        const exist = await SUBITEM.findOne({ Name: Name, Item: Item});
+        const exist = await SUBITEM.findOne({ Name: Name, Item: Item });
         console.log('Exist:', exist);
 
         if (!exist) {
@@ -64,7 +65,8 @@ const addProduct = async (req, res) => {
                 Name,
                 Price,
                 Pic: file.secure_url,
-                Stock:Stock 
+                Stock: Stock,
+                Minimum:Minimum
             });
 
             await data.save();
@@ -81,4 +83,4 @@ const addProduct = async (req, res) => {
     }
 };
 
-export { additem, addProduct }  
+export { additem, addProduct }
