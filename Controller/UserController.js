@@ -123,7 +123,7 @@ const myBooking = async (req, res) => {
     console.log(req.params);
     const id = req.params.id
     try {
-        const data = await BOOK.find({ User: id }).populate({ path: 'BookedItem', select: ['Name','Pic'] })
+        const data = await BOOK.find({ User: id }).populate({ path: 'BookedItem', select: ['Name', 'Pic'] })
 
         console.log(data);
         console.log(data.length);
@@ -134,16 +134,54 @@ const myBooking = async (req, res) => {
     }
 }
 
-const changeMobile=async(req,res)=>{
+const changeMobile = async (req, res) => {
     console.log('mobile');
-    
+
     console.log(req.body);
+    const { Mobile, NewMobile } = req.body
     try {
+        const findUser = await USER.findOne({ Mobile: Mobile })
+        console.log(findUser);
         
-    } catch (error) {   
-        
+        console.log('user is not found');
+
+        if (!findUser) {
+
+            return res.status(404).json(`${Mobile} is not registered`)
+        }
+        const update = await USER.findByIdAndUpdate(findUser._id, { Mobile: NewMobile }, { new: true })
+        console.log(update);
+
+        return res.status(200).json(`mobile is succesfuly changed`)
+
+    } catch (error) {
+        console.log(error);
+
+        return res.status(500).json(`internal server error`)
+
     }
-    
+
 
 }
-export { login, Signin, address, myBooking ,changeMobile} 
+
+const changePassword = async (req, res) => {
+    console.log(req.body);
+    const { mobile, New_Password, Confirm_NewPassword } = req.body
+    try {
+        const finduser = await USER.findOne({ Mobile: mobile })
+        console.log(finduser);
+        if (!finduser) {
+            return res.status(401).json('Invalid Mobile Number')
+
+        }
+        const saltRound = 10;
+        const hashedPassword = await bcrypt.hash(New_Password, saltRound)
+        const update = await USER.findByIdAndUpdate(finduser._id, { Password: hashedPassword }, { new: true })
+        return res.status(200).json('Password successfuly changed ')
+    } catch (error) {
+        return res.status(500).json('Internal server error')
+
+    }
+}
+
+export { login, Signin, address, myBooking, changeMobile, changePassword } 

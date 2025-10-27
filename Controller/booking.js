@@ -22,7 +22,7 @@ const booking = async (req, res) => {
 
         console.log('ok');
         const data = new BOOK({
-            User: User, Quantity: SelectedQuantity, Price: Price, BookedItem: Id
+            User: User, Quantity: SelectedQuantity, Price: Price, BookedItem: Id, Item: item.Item, Name: item.Name
         })
         const savedBook = await data.save()
         console.log(savedBook);
@@ -32,6 +32,7 @@ const booking = async (req, res) => {
             { $inc: { Stock: -SelectedQuantity } }, // reduce stock
             { new: true } // return updated document
         );
+        console.log('item', updatedItem);
 
         if (updatedItem.Stock < updatedItem.Minimum) {
             const updatedItemAvailable = await SUBITEM.findByIdAndUpdate(
@@ -56,12 +57,12 @@ const cancel = async (req, res) => {
         const findOrder = await BOOK.findById(id)
         console.log(findOrder);
         if (!findOrder) {
-            return res.status(404).json( "Order not found" );
+            return res.status(404).json("Order not found");
         }
         const itemId = findOrder.BookedItem
         const item = await SUBITEM.findById(itemId)
         if (!item) {
-            return res.status(404).json( "Item not found" );
+            return res.status(404).json("Item not found");
         }
         console.log(item);
         const current = item.Stock
@@ -85,4 +86,53 @@ const cancel = async (req, res) => {
         res.status(500).json("Server error while canceling order");
     }
 }
-export { booking, cancel }  
+
+const orders = async (req, res) => {
+    try {
+        // const fetch = await BOOK.find().populate({ path: 'BookedItem', select: ['Name', 'Pic','Item'] }).populate({
+        //     path: "User", select: ['FirstNmae', 'LastName', 'Mobile', 'Housename', 'Place', 'Post']
+        // })
+        // console.log(fetch);
+
+
+        const fetch = await BOOK.aggregate([{ $group: { _id: "$Item", total: { $sum: 1 } } }])
+        //  .populate({ path: 'BookedItem', select: ['Name', 'Pic','Item'] })
+        console.log(fetch);
+
+
+
+        // const groupedByItemName = fetch.reduce((acc, booking) => {
+        //     // get the name of the booked item
+        //     const item = booking.BookedItem?.Item || 'Unknown Item';
+
+        //     // create a key for each unique item name
+        //     if (!acc[item]) acc[item] = [];
+
+        //     // push the booking into its group
+        //     acc[item].push(booking);
+
+        //     return acc; 
+        // }, {});
+        // console.log(groupedByItemName,'jhhggjhjhhjjh');
+        // console.log(Object.keys(groupedByItemName)[0]); 
+
+        return res.status(200).json(fetch)
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json('internal server error')
+    }
+}
+
+const itemorder = async (req, res) => {
+    console.log(req.params.item);
+    const item = req.params.item
+    try {
+        const data = await BOOK.find({ Item: item })
+        console.log(data);
+        return res.status(200).json(data)
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json(` internal server error`)
+    }
+}  
+export { booking, cancel, orders, itemorder }     

@@ -13,7 +13,7 @@ app.use(express.json())
 
 const corsOptions = {
     origin: ['http://localhost:5173','https://f2home.vercel.app'], // Corrected to an array
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST','PATCH', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
 };  

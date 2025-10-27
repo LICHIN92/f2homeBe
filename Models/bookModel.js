@@ -11,6 +11,14 @@ const schema = new mongoose.Schema({
         ref: "subitem",
         required: true
     },
+    Item: {
+        type: String,
+        required: true
+    },
+    Name: {
+        type: String,
+        required: true
+    },
     Quantity: {
         type: 'string',
         required: true
@@ -29,6 +37,6 @@ const schema = new mongoose.Schema({
         timestamps: true
     }
 )
-const BOOK=mongoose.model('booking',schema)
+const BOOK = mongoose.model('booking', schema)
 
 export default BOOK

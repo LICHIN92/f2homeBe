@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
     LastName: {
         type: String,
         required: true,
-    },
+    }, 
     Mobile: {
         type: String,
         required: true,
@@ -18,9 +18,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    isAddress: {
+    isAddress: { 
         type: Boolean,
-        default: false
+        default: false 
     },
     HouseName: {
         type: String,
