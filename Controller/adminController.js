@@ -66,7 +66,7 @@ const addProduct = async (req, res) => {
                 Price,
                 Pic: file.secure_url,
                 Stock: Stock,
-                Minimum:Minimum
+                Minimum: Minimum
             });
 
             await data.save();
@@ -83,4 +83,43 @@ const addProduct = async (req, res) => {
     }
 };
 
-export { additem, addProduct }
+const searchItem = async (req, res) => {
+    console.log('search');
+    console.log(req.body.item);
+    const item = req.body.item
+    try {
+        const findData = await ITEM.find({ Item: { $regex: item, $options: 'i' } })
+        console.log(findData);
+
+        if (findData) {
+            return res.status(200).json(findData)
+        }
+        return res.status(200).json('no data')
+
+    } catch (error) {
+        console.log(error);
+
+    }
+}
+
+const EditItem = async (req, res) => {
+    console.log('edit item');
+    console.log(req.body);
+    const { newName, id } = req.body
+    try {
+        const finditem = await ITEM.findById(id)
+
+        if (finditem) {
+            console.log(finditem);
+            const update = await ITEM.findByIdAndUpdate(id, { Item: newName }, { new: true })
+            console.log(update);
+            
+            return res.status(200).json(`Item Updated succesfuly`)
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json(`Internal server error`)
+
+    }
+}
+export { additem, addProduct, searchItem, EditItem }

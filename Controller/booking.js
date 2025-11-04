@@ -65,7 +65,7 @@ const cancel = async (req, res) => {
             return res.status(404).json("Item not found");
         }
         console.log(item);
-        const current = item.Stock
+        const current = item.Stock 
         const quantity = findOrder.Quantity
         if (item) {
             const updatedItem = await SUBITEM.findByIdAndUpdate(
@@ -88,6 +88,8 @@ const cancel = async (req, res) => {
 }
 
 const orders = async (req, res) => {
+    console.log(orders);
+
     try {
         // const fetch = await BOOK.find().populate({ path: 'BookedItem', select: ['Name', 'Pic','Item'] }).populate({
         //     path: "User", select: ['FirstNmae', 'LastName', 'Mobile', 'Housename', 'Place', 'Post']
@@ -129,10 +131,33 @@ const itemorder = async (req, res) => {
     try {
         const data = await BOOK.find({ Item: item })
         console.log(data);
-        return res.status(200).json(data)
+        const dataa = await BOOK.aggregate([
+            { $match: { Item: item } },
+            { $group: { _id: "$Name", total: { $sum: 1 } } }
+        ])
+        console.log(dataa);
+
+        return res.status(200).json(dataa)
     } catch (error) {
         console.log(error);
         return res.status(500).json(` internal server error`)
     }
-}  
-export { booking, cancel, orders, itemorder }     
+}
+
+const Details = async (req, res) => {
+    const Name = req.params.Name
+    console.log(Name);
+
+    try { 
+        const data = await BOOK.find({ Name: Name })
+            .populate({ path: "User", select: ['FirstName', "LastName", "Mobile", "HouseName", 'Place', "Post"] })
+        console.log(data);
+        return res.status(200).json(data)
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json(`internal server error`)
+
+    }
+} 
+
+export { booking, cancel, orders, itemorder, Details }     
