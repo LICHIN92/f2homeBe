@@ -28,10 +28,10 @@ const schema = new mongoose.Schema({
     },
     Minimum: {
         type: Number,
-        required: true
+        required: true 
     }
 },
-    {
+    { 
         timestamps: true
     }
 )

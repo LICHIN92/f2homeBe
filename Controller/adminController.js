@@ -2,6 +2,7 @@ import cloudinaryInstance from "../config/cloudinary.js";
 import ITEM from "../Models/itemModel.js";
 import cloudinary from 'cloudinary'
 import SUBITEM from "../Models/subItem.js";
+import USER from "../Models/UserModel.js";
 
 const additem = async (req, res) => {
     console.log('admin ');
@@ -113,7 +114,7 @@ const EditItem = async (req, res) => {
             console.log(finditem);
             const update = await ITEM.findByIdAndUpdate(id, { Item: newName }, { new: true })
             console.log(update);
-            
+
             return res.status(200).json(`Item Updated succesfuly`)
         }
     } catch (error) {
@@ -122,4 +123,62 @@ const EditItem = async (req, res) => {
 
     }
 }
-export { additem, addProduct, searchItem, EditItem }
+
+const searchProduct = async (req, res) => {
+    console.log('search product');
+    console.log(req.body);
+    const name = req.body.product
+    try {
+        const data = await SUBITEM.find({ Name: { $regex: name, $options: 'i' } })
+        if (data) {
+            console.log(data);
+
+            return res.status(200).json(data)
+
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json(`internal server error`)
+    }
+}
+
+const EditProduct = async (req, res) => {
+    console.log("edit Product");
+    console.log(req.body.product);
+    const { _id, Name, Price, Availability, Stock, Minimum } = req.body
+    try {
+        const findP = await SUBITEM.findById(_id)
+        console.log(findP);
+        if (findP) {
+            const updating = await SUBITEM.findByIdAndUpdate(_id,
+                { Name: Name, Price: Price, Stock: Stock, Minimum: Minimum, Availability: Availability }, { new: true }
+            )
+
+            console.log(updating, 'updated');
+
+            return res.status(200).json(`${Name} is Updated Succesfuly`)
+
+        }
+        return res.status(404).json('fond found')
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json('internal server error')
+
+    }
+}
+
+const user = async (req, res) => {
+    console.log('users');
+
+    try {
+        const data = await (await USER.find()).length
+        console.log(data);
+       return res.status(200).json(data)
+
+    } catch (error) {
+        console.log(error);
+         
+        return res.status(500).json('internal server error')
+    }
+}
+export { additem, addProduct, searchItem, EditItem, searchProduct, EditProduct, user }

@@ -9,7 +9,15 @@ const booking = async (req, res) => {
         const item = await SUBITEM.findById(Id);
         console.log(item);
 
-        if (!item) return res.status(404).json('Item not found');
+        if (!item) {
+            return res.status(404).json('Item not found')
+        };
+
+        if (!item.Availability) {    //not available
+            return res.status(400).json(`sorry ${item.Name} is available now`);
+
+        }
+
         if (item.Stock < item.Minimum) {
             return res.status(400).json(`sorry ${item.Name} out of stock`);
 
@@ -34,13 +42,13 @@ const booking = async (req, res) => {
         );
         console.log('item', updatedItem);
 
-        if (updatedItem.Stock < updatedItem.Minimum) {
-            const updatedItemAvailable = await SUBITEM.findByIdAndUpdate(
-                Id,
-                { Availability: false },
-                { new: true }
-            );
-        }
+        // if (updatedItem.Stock < updatedItem.Minimum) {
+        //     const updatedItemAvailable = await SUBITEM.findByIdAndUpdate(
+        //         Id,
+        //         { Availability: false },
+        //         { new: true }
+        //     );
+        // } 
 
         return res.status(200).json('Booking successful');
     } catch (error) {
@@ -65,7 +73,7 @@ const cancel = async (req, res) => {
             return res.status(404).json("Item not found");
         }
         console.log(item);
-        const current = item.Stock 
+        const current = item.Stock
         const quantity = findOrder.Quantity
         if (item) {
             const updatedItem = await SUBITEM.findByIdAndUpdate(
@@ -148,7 +156,7 @@ const Details = async (req, res) => {
     const Name = req.params.Name
     console.log(Name);
 
-    try { 
+    try {
         const data = await BOOK.find({ Name: Name })
             .populate({ path: "User", select: ['FirstName', "LastName", "Mobile", "HouseName", 'Place', "Post"] })
         console.log(data);
@@ -158,6 +166,6 @@ const Details = async (req, res) => {
         return res.status(500).json(`internal server error`)
 
     }
-} 
+}
 
 export { booking, cancel, orders, itemorder, Details }     
