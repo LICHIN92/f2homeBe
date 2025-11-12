@@ -156,7 +156,7 @@ const EditProduct = async (req, res) => {
 
             console.log(updating, 'updated');
 
-            return res.status(200).json(`${Name} is Updated Succesfuly`)
+            return res.status(200).json(`${Name} is Updated Succesfully`)
 
         }
         return res.status(404).json('fond found')
@@ -171,14 +171,62 @@ const user = async (req, res) => {
     console.log('users');
 
     try {
-        const data = await (await USER.find()).length
+        const data = await USER.find({ User: false })
         console.log(data);
-       return res.status(200).json(data)
+        return res.status(200).json(data)
 
     } catch (error) {
         console.log(error);
-         
+
         return res.status(500).json('internal server error')
     }
 }
-export { additem, addProduct, searchItem, EditItem, searchProduct, EditProduct, user }
+
+const findUser = async (req, res) => {
+    console.log('finduser');
+    console.log(req.query.mobile);
+    const mobile = req.query.mobile
+    try {
+        const user = await USER.find({ Mobile: mobile })
+        console.log(user);
+        if (user.length == 0) {
+            console.log('not found');
+
+            return res.status(400).json('user not fond')
+        }
+        return res.status(200).json(user)
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json(`Internal server error`)
+
+    }
+}
+
+const deleteUser = async (req, res) => {
+    console.log('Delete User');
+    console.log(req.query.id);
+    const id = req.query.id
+    try {
+        const user = await USER.findById(id)
+        if (!user) {
+            console.log('not found');
+
+            return res.status(404).json(`This Account is not found`)
+
+        }
+        if (user.User) {
+            console.log(user);
+            console.log('Admin Account');
+
+            return res.status(404).json(`Can't delete this Account`)
+        }
+
+        const deletingUser = await USER.findByIdAndDelete(id)
+        return res.status(200).json(` Account Deleted Successfully`)
+
+    } catch (error) {
+        return res.status(500).json(`Internal server error`)
+
+    }
+}
+export { additem, addProduct, searchItem, EditItem, searchProduct, EditProduct, user, findUser, deleteUser }
