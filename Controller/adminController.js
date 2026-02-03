@@ -173,6 +173,7 @@ const user = async (req, res) => {
     try {
         const data = await USER.find({ User: false })
         console.log(data);
+        console.log(data.length);
         return res.status(200).json(data)
 
     } catch (error) {
@@ -228,5 +229,46 @@ const deleteUser = async (req, res) => {
         return res.status(500).json(`Internal server error`)
 
     }
+} 
+
+const deleteProduct = async (req, res) => {
+    console.log('delete product');
+
+    console.log(req.params);
+
+    try {
+        const find = await SUBITEM.findById(req.params.id);
+        console.log(find);
+        if(!find){
+            return res.status(401).json('product is not found')
+        }
+        const pic = find.Pic;
+        console.log(pic);
+        const parts = pic.split('/upload/');
+        console.log('parts', parts);
+        console.log('parts1', parts[1]);
+        const picUrl = parts[1]
+        console.log(parts[1].replace(/^v\d+\//, ''));
+        const s = parts[1].replace(/^v\d+\//, '')
+        const publicId = decodeURIComponent(s.substring(0, s.lastIndexOf('.')));
+        console.log('Extracted publicId:', publicId);
+
+        const result = await cloudinaryInstance.uploader.destroy(publicId, {
+            invalidate: true,
+            resource_type: "image"
+        });
+        console.log("Deletion result for", publicId, ":", result);
+        const DeleteProduct=await SUBITEM.findByIdAndDelete(req.params.id)
+        console.log(DeleteProduct);
+        return res.status(200).json('succesfully deleted')
+        
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json('internal server error')
+
+    }
 }
-export { additem, addProduct, searchItem, EditItem, searchProduct, EditProduct, user, findUser, deleteUser }
+export {
+    additem, addProduct, searchItem, EditItem, searchProduct, EditProduct,
+    user, findUser, deleteUser, deleteProduct
+} 

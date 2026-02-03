@@ -27,10 +27,15 @@ const schema = new mongoose.Schema({
         type: String,
         required: true
     },
-    delivered: {
+    Delivered: {
         type: Boolean,
         default: false
     },
+    Packed:{
+        type:Boolean,
+        default:false
+    },
+    
 
 },
     {
